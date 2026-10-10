@@ -1,0 +1,46 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Cada compilación en GitHub sube el número de versión, así el móvil acepta la actualización.
+def numeroCompilacion = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInteger()
+
+android {
+    namespace 'com.ivan.mifichaje'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.ivan.mifichaje"
+        minSdk 24
+        targetSdk 34
+        versionCode numeroCompilacion
+        versionName "1.0." + numeroCompilacion
+    }
+
+    // Firma fija: todas las versiones usan la misma clave y se instalan encima de la anterior.
+    signingConfigs {
+        release {
+            storeFile file('fichaje.jks')
+            storePassword 'mifichaje'
+            keyAlias 'fichaje'
+            keyPassword 'mifichaje'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
