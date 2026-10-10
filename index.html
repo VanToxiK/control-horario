@@ -89,7 +89,7 @@ input,select{font:inherit;font-family:var(--f-mono);padding:9px 10px;border:1px 
 .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .actions .spacer{flex:1}
 .tools{display:flex;gap:8px;flex-wrap:wrap}
-.install{background:var(--panel);border:1px dashed var(--accent);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
+[hidden]{display:none!important}
 .toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;max-width:calc(100% - 32px)}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 </style>
@@ -100,11 +100,6 @@ input,select{font:inherit;font-family:var(--f-mono);padding:9px 10px;border:1px 
     <h1>Mi Fichaje</h1>
     <span class="date" id="hoyTxt"></span>
   </header>
-
-  <div class="install" id="instalar" hidden>
-    <span>Instala la app en tu móvil para abrirla como cualquier otra.</span>
-    <button class="btn small primary" type="button" id="btnInstalar">Instalar</button>
-  </div>
 
   <section class="terminal" aria-label="Fichaje de hoy">
     <div class="clock" id="reloj">--:--<small>:--</small></div>
@@ -367,11 +362,7 @@ $("fileRestaurar").addEventListener("change",e=>{
   fr.readAsText(file);
 });
 
-/* ---------- instalación ---------- */
-let promptInstalar=null;
-window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();promptInstalar=e;$("instalar").hidden=false;});
-$("btnInstalar").addEventListener("click",async()=>{if(!promptInstalar)return;promptInstalar.prompt();await promptInstalar.userChoice.catch(()=>{});promptInstalar=null;$("instalar").hidden=true;});
-window.addEventListener("appinstalled",()=>{$("instalar").hidden=true;});
+/* ---------- funcionamiento sin conexión (versión web) ---------- */
 if("serviceWorker" in navigator&&location.protocol.startsWith("http")){navigator.serviceWorker.register("sw.js").catch(()=>{});}
 
 let tt; function aviso(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{el.hidden=true;},2400);}
